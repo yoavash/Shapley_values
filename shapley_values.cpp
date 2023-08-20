@@ -8,7 +8,7 @@
 #include <algorithm>
 using namespace std;
 
-int Factorial(int num)
+int GetFactorial(int num)
 {
 	int factorial = 1;
 	for (int i = 1; i <= num; i++)
