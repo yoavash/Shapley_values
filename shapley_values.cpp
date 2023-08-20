@@ -35,10 +35,22 @@ int GetFactorial(int num)
 // vector<int> characterTable(pow(numOfAgents, 2));
 //}
 
-vector<int> CreateRandomCharacterTable()
+vector<int> GetCharacterTable()
 {
 	agentCount = (rand() % 6) + 2;
-	agentCount = 3;
+	//cin >> numOfAgents;
+	vector<int> characterTable(pow(2, agentCount));
+
+	for (int i = 0; i < pow(2, agentCount); i++)
+	{
+		characterTable[i] = (rand() % 200) - 100;
+	}
+
+	return characterTable;
+}
+
+vector<int> GetCharacterTable(int agentCount)
+{
 	//cin >> numOfAgents;
 	vector<int> characterTable(pow(2, agentCount));
 
@@ -177,7 +189,7 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 		}
 
 		//shapleyValues[shapleyValues.size() - 1] = shapleyValues[shapleyValues.size() - 1] / Factorial(numOfAgents);
-		shapleyValues[i] = shapleyValues[i] / float(Factorial(agentCount));
+		shapleyValues[i] = shapleyValues[i] / float(GetFactorial(agentCount));
 	}
 	return shapleyValues;
 }
@@ -200,7 +212,7 @@ int main()
 {
 	vector<int> characterTable;
 	srand(time(NULL));
-	characterTable = CreateRandomCharacterTable();
+	characterTable = GetCharacterTable(3);
 
 	for (int i = 0; i < characterTable.size(); i++)
 	{
