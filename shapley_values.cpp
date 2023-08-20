@@ -8,6 +8,10 @@
 #include <algorithm>
 using namespace std;
 
+int agentCount;
+vector<vector<int>> permutations;
+
+
 int GetFactorial(int num)
 {
 	int factorial = 1;
@@ -30,24 +34,21 @@ int GetFactorial(int num)
 // cout << characterTable[0];
 // vector<int> characterTable(pow(numOfAgents, 2));
 //}
-int numOfAgents;
 
 vector<int> CreateRandomCharacterTable()
 {
-	numOfAgents = (rand() % 6) + 2;
-	numOfAgents = 3;
+	agentCount = (rand() % 6) + 2;
+	agentCount = 3;
 	//cin >> numOfAgents;
-	vector<int> characterTable(pow(2, numOfAgents));
+	vector<int> characterTable(pow(2, agentCount));
 
-	for (int i = 0; i < pow(2, numOfAgents); i++)
+	for (int i = 0; i < pow(2, agentCount); i++)
 	{
 		characterTable[i] = (rand() % 200) - 100;
 	}
 
 	return characterTable;
 }
-
-vector<vector<int>> permutations;
 
 void GenerateAllPermutations(vector<int>& v, int size)
 {
@@ -81,7 +82,7 @@ vector<vector<int>> GenerateAllCombinations()
 	// this size value is necessary as otherwise when looping through the size of combinations, as i add more the size just increases. infinite loop. doesnt work
 	int size = combinations.size();
 	vector<int> temp;
-	for (int i = 1; i < numOfAgents; i++)
+	for (int i = 1; i < agentCount; i++)
 	{
 		for (int x = 0; x < size; x++)
 		{
@@ -119,11 +120,11 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 {
 	permutations.clear();
 	vector<int> temp;
-	for (int i = 0; i < numOfAgents; i++)
+	for (int i = 0; i < agentCount; i++)
 	{
 		temp.push_back(i);
 	}
-	GenerateAllPermutations(temp, numOfAgents);
+	GenerateAllPermutations(temp, agentCount);
 
 	temp.clear();
 
@@ -139,13 +140,13 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 	//}
 
 	vector<int> currentCombination;
-	vector<float> shapleyValues(numOfAgents);
+	vector<float> shapleyValues(agentCount);
 
-	for (int i = 0; i < numOfAgents; i++)
+	for (int i = 0; i < agentCount; i++)
 	{
 		for (int permutation_index = 0; permutation_index < permutations.size(); permutation_index++)
 		{
-			for (int y = 0; y < numOfAgents; y++)
+			for (int y = 0; y < agentCount; y++)
 			{
 				currentCombination.push_back(permutations[permutation_index][y]);
 				if (permutations[permutation_index][y] == i)
@@ -176,7 +177,7 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 		}
 
 		//shapleyValues[shapleyValues.size() - 1] = shapleyValues[shapleyValues.size() - 1] / Factorial(numOfAgents);
-		shapleyValues[i] = shapleyValues[i] / float(Factorial(numOfAgents));
+		shapleyValues[i] = shapleyValues[i] / float(Factorial(agentCount));
 	}
 	return shapleyValues;
 }
