@@ -12,6 +12,23 @@ int agentCount;
 vector<vector<int>> permutations;
 
 
+void PrintIntVector(vector<int>& v)
+{
+	for (int x = 0; x < v.size(); x++)
+	{
+		cout << v[x] << ", ";
+	}
+	cout << endl << endl;
+}
+
+void Print2DIntVector(vector<vector<int>>& v)
+{
+	for (int x = 0; x < v.size(); x++)
+	{
+		PrintIntVector(v[x]);
+	}
+}
+
 int GetFactorial(int num)
 {
 	int factorial = 1;
@@ -21,19 +38,6 @@ int GetFactorial(int num)
 	}
 	return factorial;
 }
-
-//list<int> CreateCharacterTable()
-//{
-// list<int> characterTable;
-// int numOfAgents;
-// cin >> numOfAgents;
-// for (int i = 0; i < pow(numOfAgents, 2); i++)
-// {
-// characterTable.push_back((rand() % 200) - 100);
-// }
-// cout << characterTable[0];
-// vector<int> characterTable(pow(numOfAgents, 2));
-//}
 
 vector<int> GetCharacterTable()
 {
@@ -49,8 +53,9 @@ vector<int> GetCharacterTable()
 	return characterTable;
 }
 
-vector<int> GetCharacterTable(int agentCount)
+vector<int> GetCharacterTable(int _agentCount)
 {
+	agentCount = _agentCount;
 	//cin >> numOfAgents;
 	vector<int> characterTable(pow(2, agentCount));
 
@@ -62,7 +67,7 @@ vector<int> GetCharacterTable(int agentCount)
 	return characterTable;
 }
 
-void GenerateAllPermutations(vector<int>& v, int size)
+void GetPermutations(vector<int>& v, int size)
 {
 	// if size becomes 1 then adds on the obtained permutation
 	if (size == 1) {
@@ -71,7 +76,7 @@ void GenerateAllPermutations(vector<int>& v, int size)
 	}
 
 	for (int i = 0; i < size; i++) {
-		GenerateAllPermutations(v, size - 1);
+		GetPermutations(v, size - 1);
 		if (i < size - 1)
 		{
 			// if size is odd, swap first and last element
@@ -88,10 +93,11 @@ void GenerateAllPermutations(vector<int>& v, int size)
 	}
 }
 
-vector<vector<int>> GenerateAllCombinations()
+vector<vector<int>> GetCombinations()
 {
 	vector<vector<int>> combinations = { {}, {0} };
-	// this size value is necessary as otherwise when looping through the size of combinations, as i add more the size just increases. infinite loop. doesnt work
+	// this size value is necessary as otherwise when looping through the size of combinations, 
+	// as i add more the size just increases. infinite loop. doesnt work
 	int size = combinations.size();
 	vector<int> temp;
 	for (int i = 1; i < agentCount; i++)
@@ -114,8 +120,9 @@ vector<vector<int>> GenerateAllCombinations()
 	return combinations;
 }
 
-// hey dont forget that v1 isnt sorted here, so if you use this for something where v1 has to be an unsorted list, uhh, just remember that this is why its not working. also v1 and v2 is a reference, not a copy.
-bool DoVectorsContainSameElements(vector<int>& v1, vector<int>& v2)
+// hey dont forget that v1 isnt sorted here, so if you use this for something where v1 has to be an 
+// unsorted list, uhh, just remember that this is why its not working. also v1 and v2 is a reference, not a copy.
+bool DoVectorsContainSameElements(vector<int>& v1, vector<int> v2)
 {
 	if (v1.size() != v2.size())
 	{
@@ -136,11 +143,11 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 	{
 		temp.push_back(i);
 	}
-	GenerateAllPermutations(temp, agentCount);
+	GetPermutations(temp, agentCount);
 
 	temp.clear();
 
-	vector<vector<int>> combinations = GenerateAllCombinations();
+	vector<vector<int>> combinations = GetCombinations();
 
 	//for (int i = 0; i < combinations.size(); i++)
 	//{
@@ -154,8 +161,12 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 	vector<int> currentCombination;
 	vector<float> shapleyValues(agentCount);
 
+	//Print2DIntVector(permutations);
+	//Print2DIntVector(combinations);
+
 	for (int i = 0; i < agentCount; i++)
 	{
+		cout << "agent num: " << i << endl << endl;
 		for (int permutation_index = 0; permutation_index < permutations.size(); permutation_index++)
 		{
 			for (int y = 0; y < agentCount; y++)
@@ -163,6 +174,7 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 				currentCombination.push_back(permutations[permutation_index][y]);
 				if (permutations[permutation_index][y] == i)
 				{
+					//PrintIntVector(currentCombination);
 					break;
 				}
 			}
@@ -190,6 +202,7 @@ vector<float> CalculateShapleyValues(vector<int>& characterTable)
 
 		//shapleyValues[shapleyValues.size() - 1] = shapleyValues[shapleyValues.size() - 1] / Factorial(numOfAgents);
 		shapleyValues[i] = shapleyValues[i] / float(GetFactorial(agentCount));
+		
 	}
 	return shapleyValues;
 }
@@ -212,6 +225,7 @@ int main()
 {
 	vector<int> characterTable;
 	srand(time(NULL));
+	//characterTable = GetCharacterTable();
 	characterTable = GetCharacterTable(3);
 
 	for (int i = 0; i < characterTable.size(); i++)
